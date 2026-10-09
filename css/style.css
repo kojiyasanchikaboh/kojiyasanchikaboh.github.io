@@ -1,0 +1,954 @@
+/*
+ * 予約画面のデザイン
+ * Instagram の投稿（グレージュの地・白いカード・こげ茶の文字・緑の「NEXT」）とロゴ（小豆の赤・糀のクリーム）に合わせる
+ * お客様は40〜60代の女性が中心：文字は大きめ、ボタンは大きく、言葉ははっきり
+ * スマホ（アプリ内ブラウザ）を最優先。横幅は最大 560px で中央に置く
+ */
+:root {
+  --地: #ece7dd;
+  --紙: #faf8f3;
+  --白: #fff;
+  --墨: #3b332e;
+  --墨_薄: #645a52;
+  --線: #d8cfc1;
+  --緑: #557f45;
+  --緑_濃: #456a37;
+  --緑_淡: #e3ecd9;
+  --小豆: #a2443f;
+  --小豆_淡: #f5e3df;
+  --糀: #efe6d0;
+  --土: #3d6a99;
+  --角: 14px;
+  --影: 0 1px 2px rgba(59, 51, 46, 0.06), 0 4px 14px rgba(59, 51, 46, 0.07);
+  --字: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'Hiragino Sans', 'Meiryo', sans-serif;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--地);
+  color: var(--墨);
+  font-family: var(--字);
+  font-size: 17px;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  -webkit-tap-highlight-color: transparent;
+}
+body.カートあり { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+/* モーダルを開いている間、後ろの画面を動かさない（iPhone 対策で固定する） */
+body.モーダル中 { position: fixed; left: 0; right: 0; overflow: hidden; }
+
+[hidden] { display: none !important; }
+
+button { font: inherit; color: inherit; letter-spacing: inherit; }
+button:focus-visible,
+a:focus-visible { outline: 3px solid var(--緑); outline-offset: 2px; }
+
+/* ───────── ヘッダー */
+
+.ヘッダー {
+  text-align: center;
+  padding: 16px 16px 6px;
+}
+.筆記体 {
+  margin: 0 0 4px;
+  font-family: 'Homemade Apple', cursive;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+.ロゴ {
+  display: block;
+  margin: 0 auto;
+  width: 76px;
+  height: 76px;
+  mix-blend-mode: multiply; /* ロゴの白い地を背景になじませる */
+}
+.見出し {
+  margin: 6px 0 0;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+}
+.見出し_補足 {
+  display: inline-block;
+  margin-left: 0.6em;
+  padding: 0 0.7em;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  vertical-align: 0.2em;
+  border: 1px solid var(--墨_薄);
+  border-radius: 99px;
+  color: var(--墨_薄);
+}
+/* 2段目からは小さく */
+.ヘッダー小 .ヘッダー { padding-top: 10px; }
+.ヘッダー小 .ロゴ { display: none; }
+.ヘッダー小 .見出し { margin-top: 0; font-size: 18px; }
+
+/* ───────── 本体 */
+
+.本体 {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 16px 24px;
+}
+
+.お知らせ {
+  margin: 12px 0;
+  padding: 12px 16px;
+  background: var(--紙);
+  border-left: 4px solid var(--緑);
+  border-radius: 8px;
+  white-space: pre-wrap;
+}
+.お知らせ_注意 { border-left-color: var(--小豆); background: var(--小豆_淡); }
+
+/* 進み具合 */
+.進み具合 {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  margin: 10px 0 16px;
+  padding: 0;
+  list-style: none;
+  counter-reset: 手順;
+}
+.進み具合 li {
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--墨_薄);
+  counter-increment: 手順;
+}
+.進み具合 li::before {
+  content: counter(手順);
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: 0 auto 3px;
+  line-height: 28px;
+  border: 1px solid var(--線);
+  border-radius: 50%;
+  background: var(--紙);
+  font-size: 15px;
+}
+.進み具合 li.済::before { content: '✓'; background: var(--緑_淡); border-color: var(--緑_淡); color: var(--緑_濃); }
+.進み具合 li.今 { color: var(--墨); font-weight: 700; }
+.進み具合 li.今::before { background: var(--墨); border-color: var(--墨); color: var(--白); }
+
+/* 段 */
+.段_読み込み {
+  padding: 56px 0;
+  text-align: center;
+  color: var(--墨_薄);
+}
+.段_読み込み p { margin: 4px 0; }
+.くるくる {
+  width: 36px;
+  height: 36px;
+  margin: 0 auto 14px;
+  border: 3px solid var(--線);
+  border-top-color: var(--緑);
+  border-radius: 50%;
+  animation: 回る 0.9s linear infinite;
+}
+@keyframes 回る { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .くるくる { animation-duration: 3s; } }
+
+.段の見出し {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 12px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.番号 {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--墨);
+  color: var(--白);
+  font-size: 15px;
+}
+
+.カード {
+  padding: 16px;
+  background: var(--紙);
+  border-radius: var(--角);
+  box-shadow: var(--影);
+}
+
+.選んだもの {
+  margin: -4px 0 12px;
+  color: var(--墨_薄);
+}
+
+.戻る {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: 0 0 2px;
+  padding: 0 4px 0 0;
+  border: 0;
+  background: none;
+  color: var(--墨_薄);
+  font-size: 16px;
+  cursor: pointer;
+}
+.戻る::before { content: '‹'; margin-right: 8px; font-size: 26px; line-height: 1; }
+
+.注記 {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 15px;
+  color: var(--墨_薄);
+}
+.注記 li { position: relative; padding-left: 1.4em; margin: 6px 0; }
+.注記 li::before { content: '❁'; position: absolute; left: 0; color: var(--緑); }
+
+.案内 { margin: 0 0 8px; font-size: 15px; color: var(--墨_薄); }
+.小さい { font-size: 15px; }
+.空の案内 { margin: 12px 0; text-align: center; }
+
+/* ───────── ボタン */
+
+.ボタン {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 54px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 14px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ボタン_主 { background: var(--緑); color: var(--白); box-shadow: 0 2px 0 var(--緑_濃); }
+.ボタン_主:active { background: var(--緑_濃); }
+.ボタン:disabled { background: var(--線); color: var(--墨_薄); box-shadow: none; cursor: default; }
+.ボタン_幅いっぱい { width: 100%; }
+.ボタン_金額つき { justify-content: space-between; }
+#読み込み失敗 .ボタン { margin-top: 8px; }
+.ボタン_文字 {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 4px;
+  border: 0;
+  background: none;
+  color: var(--緑_濃);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+/* ───────── 1. カレンダー */
+
+.暦_上 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.暦_月 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: 0.1em; }
+.月送り {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--線);
+  border-radius: 50%;
+  background: var(--白);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+.月送り:disabled { opacity: 0.3; cursor: default; }
+
+.暦 {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+}
+.暦_曜日 { font-size: 14px; color: var(--墨_薄); padding: 2px 0; }
+.暦_曜日.曜日0 { color: var(--小豆); }
+.暦_曜日.曜日6 { color: var(--土); }
+.暦_日 {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  min-height: 42px;
+  border-radius: 50%;
+  font-size: 16px;
+  color: #b3aa9e;
+}
+button.暦_日 {
+  padding: 0;
+  border: 2px solid var(--緑);
+  background: var(--緑_淡);
+  color: var(--墨);
+  font-weight: 700;
+  cursor: pointer;
+}
+button.暦_日.選択中 { background: var(--墨); border-color: var(--墨); color: var(--白); }
+
+.凡例 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 0;
+  font-size: 15px;
+  color: var(--墨_薄);
+}
+.凡例_印 {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--緑);
+  border-radius: 50%;
+  background: var(--緑_淡);
+}
+
+/* ───────── 2. 受取時間 */
+
+.時間帯 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.時間帯_枠 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 54px;
+  padding: 4px 6px;
+  border: 1px solid var(--線);
+  border-radius: 12px;
+  background: var(--白);
+  font-size: 17px;
+  cursor: pointer;
+}
+.時間帯_枠.混雑 { background: #f7f3ec; }
+.時間帯_枠.選択中 { background: var(--墨); border-color: var(--墨); color: var(--白); }
+
+.札 {
+  display: inline-block;
+  padding: 0 9px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 22px;
+  white-space: nowrap;
+}
+.札_混雑 { background: var(--小豆_淡); color: var(--小豆); }
+.札_終了 { background: var(--線); color: var(--墨_薄); }
+
+/* ───────── 3. 商品 */
+
+.受取の表示 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 0 12px;
+  padding: 8px 8px 8px 14px;
+  background: var(--紙);
+  border-radius: 12px;
+}
+.受取の表示_文 { margin: 0; font-weight: 500; }
+.受取の表示_札 {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--墨);
+  color: var(--白);
+  font-size: 13px;
+  vertical-align: 0.1em;
+}
+.受取の表示_変更 {
+  flex: none;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--線);
+  border-radius: 99px;
+  background: var(--白);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* 分類タブ（上に貼りつく） */
+.分類 {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap; /* 入りきらないタブは折り返す（横にずらす操作は気づきにくいため） */
+  gap: 8px;
+  margin: 0 -16px;
+  padding: 10px 16px;
+  background: var(--地);
+}
+.分類_タブ {
+  flex: none;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--線);
+  border-radius: 99px;
+  background: var(--白);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.分類_タブ.今 { background: var(--墨); border-color: var(--墨); color: var(--白); }
+
+.分類の段 { padding-top: 6px; scroll-margin-top: 70px; }
+.分類の見出し {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 10px;
+  font-size: 18px;
+  font-weight: 700;
+}
+.分類の見出し::after { content: ''; flex: 1; height: 1px; background: var(--線); }
+
+/* 2列のカード */
+.品の一覧 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.品 {
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 12px;
+  border: 0;
+  border-radius: var(--角);
+  background: var(--紙);
+  box-shadow: var(--影);
+  text-align: left;
+  cursor: pointer;
+}
+.品:active { transform: scale(0.98); }
+.品_写真枠 { position: relative; display: block; }
+.品_写真 {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--角) var(--角) 0 0;
+  background: var(--糀);
+}
+.品_写真なし { object-fit: contain; padding: 18%; mix-blend-mode: multiply; }
+.品_終了 .品_写真 { filter: grayscale(0.6) opacity(0.6); }
+.品_終了札 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 4px 14px;
+  border-radius: 99px;
+  background: rgba(59, 51, 46, 0.85);
+  color: var(--白);
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.品_個数 {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: grid;
+  place-items: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 6px;
+  border: 2px solid var(--白);
+  border-radius: 99px;
+  background: var(--小豆);
+  color: var(--白);
+  font-size: 16px;
+  font-weight: 700;
+}
+.品_名前 {
+  display: -webkit-box;
+  margin: 10px 12px 4px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.品_価格 { margin: auto 12px 0; font-size: 17px; }
+
+/* サイズと個数の行（商品の画面） */
+.サイズの一覧 { margin: 0; padding: 0; list-style: none; }
+.サイズ {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid var(--線);
+}
+.サイズ:last-child { border-bottom: 1px solid var(--線); }
+.サイズ_名前 { display: flex; flex-direction: column; font-size: 18px; font-weight: 500; line-height: 1.4; }
+.サイズ_価格 { font-size: 17px; font-weight: 400; color: var(--墨_薄); }
+.サイズ_注意 {
+  grid-column: 1 / -1;
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--小豆);
+  text-align: right;
+}
+.サイズ.終了 .サイズ_名前 { color: #a59b8f; }
+
+.数量 { display: inline-flex; align-items: center; gap: 4px; }
+.数量_ボタン {
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--墨_薄);
+  border-radius: 50%;
+  background: var(--白);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+.数量_ボタン:not(:disabled):active { background: var(--緑_淡); }
+.数量_ボタン:disabled { border-color: var(--線); color: #c4bbb0; cursor: default; }
+.数量_数 { min-width: 2em; text-align: center; font-size: 22px; font-weight: 700; }
+
+/* 画面下のカートボタン */
+.カートボタンの枠 {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  padding: 10px 16px calc(12px + env(safe-area-inset-bottom));
+  background: linear-gradient(rgba(236, 231, 221, 0), var(--地) 35%);
+}
+.カートボタン {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 528px;
+  min-height: 62px;
+  margin: 0 auto;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 99px;
+  background: var(--緑);
+  color: var(--白);
+  box-shadow: 0 6px 18px rgba(69, 106, 55, 0.35);
+  font-size: 19px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.カートボタン.空 { background: var(--墨_薄); box-shadow: 0 6px 18px rgba(59, 51, 46, 0.2); font-size: 17px; font-weight: 500; }
+.カートボタン_絵 { position: relative; display: inline-flex; }
+.カートボタン_点数 {
+  position: absolute;
+  top: -10px;
+  right: -14px;
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 5px;
+  border-radius: 99px;
+  background: var(--白);
+  color: var(--緑_濃);
+  font-size: 14px;
+}
+.カートボタン_文 { flex: 1; text-align: center; }
+.カートボタン_金額 { font-size: 19px; }
+
+/* ───────── モーダル（下から出る板） */
+
+.モーダル {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.モーダル_幕 { position: absolute; inset: 0; background: rgba(40, 34, 30, 0.5); animation: 現れる 0.2s ease-out; }
+.モーダル_板 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100% - 24px);
+  background: var(--紙);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -8px 30px rgba(40, 34, 30, 0.25);
+  animation: 上がる 0.25s ease-out;
+}
+@keyframes 現れる { from { opacity: 0; } }
+@keyframes 上がる { from { transform: translateY(40px); opacity: 0.4; } }
+@media (prefers-reduced-motion: reduce) {
+  .モーダル_幕,
+  .モーダル_板 { animation: none; }
+}
+.モーダル_閉じる {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--線);
+  border-radius: 50%;
+  background: var(--白);
+  box-shadow: 0 2px 8px rgba(40, 34, 30, 0.15);
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+.モーダル_中身 {
+  flex: 1;
+  min-height: 0;
+  padding: 18px 18px 8px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.モーダル_下 {
+  padding: 12px 18px calc(14px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--線);
+  background: var(--紙);
+}
+.モーダル_見出し {
+  margin: 4px 56px 8px 0;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.モ_写真 {
+  display: block;
+  width: calc(100% + 36px);
+  max-width: none;
+  margin: -18px -18px 14px;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: 20px 20px 0 0;
+  background: var(--糀);
+}
+.モ_写真 + .モーダル_見出し { margin-right: 0; }
+.モ_説明 { margin: 0 0 10px; color: var(--墨_薄); font-size: 16px; }
+.モ_小見出し { margin: 16px 0 4px; font-size: 16px; font-weight: 700; color: var(--墨_薄); }
+
+/* カートの中身 */
+.カートの一覧 { margin: 0; padding: 0; list-style: none; }
+.カートの行 { padding: 14px 0; border-top: 1px solid var(--線); }
+.カートの行:last-child { border-bottom: 1px solid var(--線); }
+.カートの行_名前 { margin: 0 0 6px; font-size: 18px; font-weight: 700; line-height: 1.45; }
+.カートの行_サイズ { display: block; font-size: 16px; font-weight: 400; color: var(--墨_薄); }
+.カートの行_下 { display: flex; align-items: center; gap: 10px; }
+.カートの行_小計 { flex: 1; text-align: right; font-size: 18px; }
+.削除 {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--小豆);
+  border-radius: 99px;
+  background: var(--白);
+  color: var(--小豆);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.合計 { display: flex; align-items: baseline; gap: 10px; margin: 0 0 10px; }
+.合計 span:first-child { color: var(--墨_薄); }
+.合計 strong { margin-left: auto; font-size: 26px; }
+.合計_税 { font-size: 14px; color: var(--墨_薄); }
+
+/* ───────── 問い合わせ・フッター */
+
+.問い合わせ {
+  margin: 28px 0 0;
+  padding: 16px;
+  border: 1px solid var(--線);
+  border-radius: var(--角);
+  font-size: 15px;
+  text-align: center;
+  color: var(--墨_薄);
+}
+.問い合わせ p { margin: 0; }
+.問い合わせのリンク { display: flex; justify-content: center; gap: 10px; margin-top: 10px !important; }
+.リンクボタン {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid var(--墨_薄);
+  border-radius: 99px;
+  background: var(--白);
+  color: var(--墨);
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.フッター {
+  padding: 16px 16px 28px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--墨_薄);
+}
+.フッター p { margin: 0; }
+
+/* ───────── 4. お客様の情報（入力欄） */
+
+.入力欄の一覧 { display: grid; gap: 22px; }
+.入力欄 label:not(.チェック) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+.必須,
+.任意 {
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 22px;
+}
+.必須 { background: var(--小豆); color: var(--白); }
+.任意 { background: var(--線); color: var(--墨_薄); }
+.入力欄 input[type='text'],
+.入力欄 input[type='tel'],
+.入力欄 input[type='email'],
+.入力欄 textarea {
+  display: block;
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 14px;
+  border: 1px solid #b9ae9f;
+  border-radius: 10px;
+  background: var(--白);
+  color: var(--墨);
+  font: inherit;
+  font-size: 18px; /* 16px 以上：iPhone で入力時に画面が拡大されないように */
+  letter-spacing: 0.02em;
+}
+.入力欄 textarea { min-height: 120px; line-height: 1.6; resize: vertical; }
+.入力欄 input:focus,
+.入力欄 textarea:focus { outline: 3px solid var(--緑_淡); border-color: var(--緑); }
+.入力欄 [aria-invalid='true'] { border-color: var(--小豆); background: #fffaf9; }
+.入力欄 ::placeholder { color: #aaa093; }
+.入力欄_補足 { margin: 6px 0 0; font-size: 14px; color: var(--墨_薄); }
+.入力欄_案内 { margin: 0 0 8px; padding: 0; list-style: none; font-size: 15px; color: var(--墨_薄); }
+.入力欄_案内 li { position: relative; padding-left: 1.4em; }
+.入力欄_案内 li::before { content: '❁'; position: absolute; left: 0; color: var(--緑); }
+.入力欄_エラー {
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--小豆_淡);
+  color: var(--小豆);
+  font-size: 15px;
+  font-weight: 700;
+}
+.入力欄_エラー::before { content: '！ '; }
+
+.チェック {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 8px 14px;
+  border: 1px solid #b9ae9f;
+  border-radius: 10px;
+  background: var(--白);
+  font-weight: 500;
+  cursor: pointer;
+}
+.チェック input { flex: none; width: 26px; height: 26px; margin: 0; accent-color: var(--緑); }
+
+/* 人には見えない欄（機械による送信の対策） */
+.見えない { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* ───────── 5. 確認 */
+
+.確認の枠 { margin-bottom: 14px; }
+.確認の見出し { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.確認の見出し h3 { margin: 0; font-size: 16px; color: var(--墨_薄); }
+.小さいボタン {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--線);
+  border-radius: 99px;
+  background: var(--白);
+  font-size: 15px;
+  cursor: pointer;
+}
+.確認の枠 p { margin: 0; }
+.確認_大きい { font-size: 20px; font-weight: 700; }
+.確認_商品 { margin: 0 0 10px; padding: 0; list-style: none; }
+.確認_商品 li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--線);
+}
+.確認_商品名 { grid-column: 1 / -1; font-weight: 700; line-height: 1.45; }
+.確認_数量 { color: var(--墨_薄); }
+.確認_小計 { text-align: right; font-weight: 700; }
+.確認_お客様 { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; }
+.確認_お客様 dt { color: var(--墨_薄); font-size: 15px; }
+.確認_お客様 dd { margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+
+.大事なお知らせ {
+  margin: 18px 0 14px;
+  padding: 14px 16px;
+  border: 2px solid var(--緑);
+  border-radius: var(--角);
+  background: var(--紙);
+}
+.大事なお知らせ .注記 { margin: 0 0 12px; font-size: 16px; color: var(--墨); }
+.同意 { border-width: 2px; font-weight: 700; }
+
+.ボタン_大 { min-height: 62px; font-size: 20px; }
+.送信中 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 12px 0 0;
+  font-weight: 700;
+}
+.くるくる_小 { width: 22px; height: 22px; margin: 0; border-width: 3px; }
+
+/* ───────── 6. 完了 */
+
+.完了 { text-align: center; padding: 24px 18px; }
+.完了_印 { margin: 0; font-size: 34px; color: var(--緑); line-height: 1; }
+.完了_見出し { margin: 8px 0 16px; font-size: 23px; }
+.完了_番号の見出し { margin: 0; color: var(--墨_薄); font-size: 15px; }
+.完了_番号 {
+  margin: 4px auto 6px;
+  padding: 8px 18px;
+  display: inline-block;
+  border: 2px dashed var(--緑);
+  border-radius: 12px;
+  background: var(--白);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.完了_文 { margin: 16px 0 0; text-align: left; white-space: pre-wrap; }
+.完了_案内 { margin-top: 14px; }
+.完了_案内 h3 { margin: 0 0 4px; font-size: 17px; }
+.完了_案内 .注記 { margin-top: 4px; }
+
+/* ───────── 受取日：営業日だが、お選びの商品を用意できない日 */
+.暦_日.用意できない {
+  position: relative;
+  color: #b3aa9e;
+  background: repeating-linear-gradient(135deg, transparent 0 5px, rgba(179, 170, 158, 0.18) 5px 7px);
+}
+
+/* ───────── キャンセルポリシー・プライバシーポリシー */
+.文面のボタン { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+.文面 h3 { margin: 18px 0 4px; font-size: 17px; }
+.文面 p { margin: 0 0 10px; }
+.文面 ol { margin: 0 0 10px; padding-left: 1.6em; }
+.フッター_リンク { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; margin-bottom: 8px !important; }
+.文字のリンク {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--墨_薄);
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* ───────── 予約照会（shokai.html） */
+.照会_結果 { margin-bottom: 14px; }
+.照会_受付番号 { margin: 0; color: var(--墨_薄); }
+.照会_受付番号 strong { color: var(--墨); font-size: 20px; letter-spacing: 0.06em; }
+.照会_状態 {
+  display: inline-block;
+  margin: 10px 0 6px;
+  padding: 4px 16px;
+  border-radius: 99px;
+  font-size: 19px;
+  font-weight: 700;
+}
+.状態_ご予約確定 { background: var(--緑_淡); color: var(--緑_濃); }
+.状態_店舗で確認中 { background: #f6ecd2; color: #7a5a12; }
+.状態_キャンセル済み { background: var(--線); color: var(--墨_薄); }
+.照会_状態の説明 { margin: 0 0 12px; }
+.照会_項目 { margin-bottom: 12px; }
+.フッター_リンク a.文字のリンク { display: inline-flex; align-items: center; }
+
+/* ───────── アプリ内ブラウザの案内（js/inapp.js） */
+.アプリ内の案内 {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 10px 52px 10px 16px;
+  background: #f6ecd2;
+  border-bottom: 1px solid #e3d3a8;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.アプリ内の案内_文 { flex: 1 1 220px; margin: 0; }
+.アプリ内の案内_ボタン {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 99px;
+  background: var(--墨);
+  color: var(--白);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.アプリ内の案内_閉じる {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: none;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* ───────── メンテナンス中 */
+.メンテナンス { text-align: center; }
+.メンテナンス h2 { margin: 6px 0 10px; font-size: 20px; }
+.メンテナンス p { margin: 0; white-space: pre-wrap; text-align: left; }

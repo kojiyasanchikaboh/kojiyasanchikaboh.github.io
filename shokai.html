@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#ece7dd">
+  <meta name="robots" content="noindex">
+  <title>ご予約の確認｜まちのこうじ屋さん Chika房</title>
+  <link rel="icon" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Homemade+Apple&family=Zen+Maru+Gothic:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="ヘッダー">
+    <p class="筆記体">machi no koji-yasan Chikaboh</p>
+    <img class="ロゴ" src="images/logo.png" alt="まちのこうじ屋さん Chika房" width="76" height="76">
+    <h1 class="見出し">ご予約の確認</h1>
+  </header>
+
+  <main class="本体">
+    <noscript>
+      <p class="お知らせ お知らせ_注意">このページを使うには JavaScript を有効にしてください。</p>
+    </noscript>
+
+    <!-- 照会の入力 -->
+    <section id="照会の入力" class="段">
+      <p class="案内">ご予約のときの<strong>受付番号</strong>と<strong>電話番号</strong>を入力してください。受付番号は、受付のメール・確定のメールに書いてあります。</p>
+      <form id="照会" class="カード 入力欄の一覧" novalidate autocomplete="on">
+        <div class="入力欄">
+          <label for="入力_受付番号">受付番号<span class="必須">必須</span></label>
+          <input id="入力_受付番号" type="text" inputmode="numeric" maxlength="20" placeholder="例）261008-001" autocomplete="off">
+          <p class="入力欄_補足">数字だけ入力しても大丈夫です（ハイフンは自動で入ります）</p>
+          <p class="入力欄_エラー" id="エラー_受付番号" hidden></p>
+        </div>
+        <div class="入力欄">
+          <label for="入力_電話番号">電話番号<span class="必須">必須</span></label>
+          <input id="入力_電話番号" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="例）090-1234-5678">
+          <p class="入力欄_補足">ご予約のときに入力した電話番号</p>
+          <p class="入力欄_エラー" id="エラー_電話番号" hidden></p>
+        </div>
+        <div id="照会のエラー" class="お知らせ お知らせ_注意" role="alert" hidden></div>
+        <button type="submit" id="照会ボタン" class="ボタン ボタン_主 ボタン_幅いっぱい">ご予約を確認する</button>
+        <p id="照会中" class="送信中" hidden aria-live="polite"><span class="くるくる くるくる_小" aria-hidden="true"></span>確認しています…</p>
+      </form>
+    </section>
+
+    <!-- 照会の結果 -->
+    <section id="照会の結果" class="段" hidden>
+      <div class="カード 照会_結果">
+        <p class="照会_受付番号">受付番号 <strong id="結果_受付番号"></strong></p>
+        <p id="結果_状態" class="照会_状態"></p>
+        <p id="結果_状態の説明" class="照会_状態の説明"></p>
+        <dl class="確認_お客様 照会_項目">
+          <dt>受取日時</dt><dd id="結果_受取" class="確認_大きい"></dd>
+          <dt>お渡し</dt><dd id="結果_お渡し"></dd>
+        </dl>
+        <ul id="結果_商品" class="確認_商品"></ul>
+        <p class="合計"><span id="結果_点数"></span><strong id="結果_金額"></strong><span class="合計_税">（税込・店頭でお支払い）</span></p>
+      </div>
+      <ul class="注記">
+        <li>ご予約の変更・キャンセルは、受取日の2日前までに Instagram の DM または公式LINE からご連絡ください。前日以降のキャンセルは、商品代金の100%をいただく場合があります</li>
+      </ul>
+      <button type="button" id="別の予約" class="ボタン_文字">別のご予約を確認する</button>
+    </section>
+
+    <!-- 問い合わせ先 -->
+    <section id="問い合わせ" class="問い合わせ">
+      <p>ご不明な点は、Instagram の DM または公式LINE からお問い合わせください。</p>
+      <p class="問い合わせのリンク">
+        <a id="Instagramへ" class="リンクボタン" href="#" target="_blank" rel="noopener" hidden>Instagram</a>
+        <a id="LINEへ" class="リンクボタン" href="#" target="_blank" rel="noopener" hidden>公式LINE</a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="フッター">
+    <p class="フッター_リンク"><a class="文字のリンク" href="./">ご予約はこちら</a></p>
+    <p>まちのこうじ屋さん Chika房</p>
+  </footer>
+
+  <script src="js/inapp.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/shokai.js"></script>
+</body>
+</html>

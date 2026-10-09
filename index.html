@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#ece7dd">
+  <meta name="robots" content="noindex">
+  <title>ご予約｜まちのこうじ屋さん Chika房</title>
+  <link rel="icon" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Homemade+Apple&family=Zen+Maru+Gothic:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="ヘッダー">
+    <p class="筆記体">machi no koji-yasan Chikaboh</p>
+    <img class="ロゴ" src="images/logo.png" alt="まちのこうじ屋さん Chika房" width="76" height="76">
+    <h1 class="見出し">ご予約<span class="見出し_補足">店頭受取</span></h1>
+  </header>
+
+  <main class="本体">
+    <noscript>
+      <p class="お知らせ お知らせ_注意">このページを使うには JavaScript を有効にしてください。</p>
+    </noscript>
+
+    <div id="お知らせ" class="お知らせ" hidden></div>
+
+    <ol id="進み具合" class="進み具合" aria-label="ご予約の手順" hidden>
+      <li data-step="1">商品</li>
+      <li data-step="2">受取日</li>
+      <li data-step="3">時間</li>
+      <li data-step="4">お客様</li>
+      <li data-step="5">確認</li>
+    </ol>
+
+    <!-- 読み込み中・読み込み失敗 -->
+    <section id="読み込み" class="段 段_読み込み" aria-live="polite">
+      <div class="くるくる" aria-hidden="true"></div>
+      <p>読み込み中です…</p>
+      <p class="小さい" id="読み込みの補足" hidden>混み合っています。このままお待ちください（30秒ほどかかることがあります）</p>
+    </section>
+
+    <section id="読み込み失敗" class="段" hidden>
+      <div class="カード">
+        <h2 class="段の見出し">読み込めませんでした</h2>
+        <p id="読み込み失敗の文"></p>
+        <button type="button" class="ボタン ボタン_主 ボタン_幅いっぱい" id="再読み込み">もう一度読み込む</button>
+      </div>
+    </section>
+
+    <!-- メンテナンス中（設定「メンテナンス中」にチェックがあるとき。受付を止める：要件 No.21） -->
+    <section id="メンテナンス中" class="段" hidden>
+      <div class="カード メンテナンス">
+        <h2>ただいまご予約を受け付けておりません</h2>
+        <p id="メンテナンス中の文"></p>
+      </div>
+      <ul class="注記">
+        <li>お急ぎの方は、Instagram の DM または公式LINE からお問い合わせください</li>
+      </ul>
+    </section>
+
+    <!-- 1. 商品（商品を先に選び、用意できる日を次の段で選ぶ：要件 No.36） -->
+    <section id="段1" class="段" hidden>
+      <h2 class="段の見出し"><span class="番号">1</span>商品をお選びください</h2>
+      <p class="案内">商品を押すと、サイズと個数を選べます。受取日は次の画面で、ご用意できる日からお選びいただけます</p>
+      <p id="商品_選べる日なし" class="お知らせ お知らせ_注意" hidden>ただいまご予約いただける日がありません。Instagram の DM または公式LINE からお問い合わせください。</p>
+      <nav id="分類" class="分類" aria-label="商品の分類"></nav>
+      <div id="商品" class="商品の分類一覧"></div>
+      <ul class="注記">
+        <li>1つの商品につき<span id="上限個数">20</span>個までご予約いただけます。それ以上は DM・公式LINE でご相談ください</li>
+        <li>ラッピング（1個50円）をご希望の方は、お客様情報の備考欄にご記入ください</li>
+      </ul>
+    </section>
+
+    <!-- 2. 受取日 -->
+    <section id="段2" class="段" hidden>
+      <button type="button" class="戻る" data-back="段1">商品を選び直す</button>
+      <h2 class="段の見出し"><span class="番号">2</span>受取日をお選びください</h2>
+      <div class="カード">
+        <div id="カレンダー"></div>
+        <p class="凡例"><span class="凡例_印"></span>お選びの商品をご用意できる日</p>
+      </div>
+      <p id="選べる日なし" class="お知らせ お知らせ_注意" hidden>お選びの商品を全部ご用意できる日がありません。商品の個数を減らすか、Instagram の DM または公式LINE からご相談ください。</p>
+      <ul class="注記">
+        <li>ご予定がまだはっきりしない方は、<strong>受け取れる可能性が高い日</strong>をお選びください。変わるかもしれない場合は、お客様情報の備考欄にご記入ください</li>
+        <li>締切を過ぎた日・お休みの日・ご用意できない日は選べません。臨時の営業・お休みは Instagram でお知らせします</li>
+      </ul>
+    </section>
+
+    <!-- 3. 受取時間 -->
+    <section id="段3" class="段" hidden>
+      <button type="button" class="戻る" data-back="段2">受取日を選び直す</button>
+      <h2 class="段の見出し"><span class="番号">3</span>受取時間をお選びください</h2>
+      <p class="選んだもの" id="選んだ日_3"></p>
+      <div class="カード">
+        <div id="時間帯" class="時間帯"></div>
+      </div>
+      <ul class="注記">
+        <li>駐車場は2台です。「混雑」の時間帯もお選びいただけますが、店舗で確認してから確定のご連絡をします</li>
+      </ul>
+    </section>
+
+    <!-- 4. お客様の情報 -->
+    <section id="段4" class="段" hidden>
+      <button type="button" class="戻る" data-back="段3">受取時間を選び直す</button>
+      <h2 class="段の見出し"><span class="番号">4</span>お客様の情報を入力してください</h2>
+      <form id="お客様の情報" class="カード 入力欄の一覧" novalidate autocomplete="on">
+        <div class="入力欄">
+          <label for="入力_お名前">お名前<span class="必須">必須</span></label>
+          <input id="入力_お名前" name="name" type="text" autocomplete="name" maxlength="50" placeholder="例）麹 花子" data-項目="お名前">
+          <p class="入力欄_エラー" id="エラー_お名前" hidden></p>
+        </div>
+        <div class="入力欄">
+          <label for="入力_フリガナ">フリガナ<span class="必須">必須</span></label>
+          <input id="入力_フリガナ" name="furigana" type="text" maxlength="50" placeholder="例）コウジ ハナコ" data-項目="フリガナ">
+          <p class="入力欄_補足">ひらがなで入力しても、カタカナに直ります</p>
+          <p class="入力欄_エラー" id="エラー_フリガナ" hidden></p>
+        </div>
+        <div class="入力欄">
+          <label for="入力_電話番号">電話番号<span class="必須">必須</span></label>
+          <input id="入力_電話番号" name="tel" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="例）090-1234-5678" data-項目="電話番号">
+          <p class="入力欄_補足">ご予約の確認（予約照会）にも使います</p>
+          <p class="入力欄_エラー" id="エラー_電話番号" hidden></p>
+        </div>
+        <div class="入力欄">
+          <label for="入力_メールアドレス">メールアドレス<span class="必須">必須</span></label>
+          <input id="入力_メールアドレス" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="例）hanako@example.com" data-項目="メールアドレス">
+          <p class="入力欄_エラー" id="エラー_メールアドレス" hidden></p>
+        </div>
+        <div class="入力欄">
+          <label for="入力_メールアドレス確認">メールアドレス（確認用）<span class="必須">必須</span></label>
+          <input id="入力_メールアドレス確認" name="email2" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="確認のため、もう一度入力してください" data-項目="メールアドレス確認">
+          <p class="入力欄_エラー" id="エラー_メールアドレス確認" hidden></p>
+        </div>
+        <div class="入力欄">
+          <label class="チェック">
+            <input id="入力_冷蔵希望" type="checkbox">
+            <span>冷蔵でのお渡しを希望する</span>
+          </label>
+          <p class="入力欄_補足">ご要望がない場合は、冷凍でのお渡しになります</p>
+        </div>
+        <div class="入力欄">
+          <label for="入力_備考">備考<span class="任意">任意</span></label>
+          <ul class="入力欄_案内">
+            <li>ラッピング（1個50円）をご希望の方は、こちらにご記入ください</li>
+            <li>受取日時が変わるかもしれない場合は、こちらにご記入ください</li>
+          </ul>
+          <textarea id="入力_備考" rows="4" maxlength="500" data-項目="お客様備考"></textarea>
+          <p class="入力欄_補足">備考にご記入がある場合は、店舗で確認してから確定のご連絡をします</p>
+          <p class="入力欄_エラー" id="エラー_お客様備考" hidden></p>
+        </div>
+        <!-- 人には見えない欄（機械による送信の対策）。入力しないでください -->
+        <div class="見えない" aria-hidden="true">
+          <label for="入力_ホームページ">ホームページ</label>
+          <input id="入力_ホームページ" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <button type="submit" class="ボタン ボタン_主 ボタン_幅いっぱい">入力内容を確認する</button>
+      </form>
+    </section>
+
+    <!-- 5. 確認 -->
+    <section id="段5" class="段" hidden>
+      <button type="button" class="戻る" data-back="段4">お客様の情報を直す</button>
+      <h2 class="段の見出し"><span class="番号">5</span>ご予約の内容をご確認ください</h2>
+
+      <div class="カード 確認の枠">
+        <div class="確認の見出し"><h3>受取日時</h3><button type="button" class="小さいボタン" data-back="段2">変更</button></div>
+        <p id="確認_受取" class="確認_大きい"></p>
+        <p id="確認_お渡し"></p>
+      </div>
+
+      <div class="カード 確認の枠">
+        <div class="確認の見出し"><h3>ご予約の商品</h3><button type="button" class="小さいボタン" data-back="段1">変更</button></div>
+        <ul id="確認_商品" class="確認_商品"></ul>
+        <p class="合計"><span id="確認_点数"></span><strong id="確認_金額"></strong><span class="合計_税">（税込・店頭でお支払い）</span></p>
+      </div>
+
+      <div class="カード 確認の枠">
+        <div class="確認の見出し"><h3>お客様の情報</h3><button type="button" class="小さいボタン" data-back="段4">変更</button></div>
+        <dl id="確認_お客様" class="確認_お客様"></dl>
+      </div>
+
+      <div class="大事なお知らせ">
+        <ul class="注記">
+          <li id="確認_冷凍の説明">商品は<strong>冷凍</strong>でお渡しします</li>
+          <li id="確認_保冷バッグ" hidden>要冷蔵の商品がございます。<strong>保冷バッグのご持参</strong>をお願いします</li>
+          <li>内容によっては、店舗で確認してから確定のご連絡をします（備考欄にご記入がある場合・混雑している時間帯など）</li>
+          <li>ご予約の変更・キャンセルは、受取日の2日前までに Instagram の DM または公式LINE からご連絡ください。前日以降のキャンセルは、商品代金の100%をいただく場合があります</li>
+        </ul>
+        <p class="文面のボタン">
+          <button type="button" class="小さいボタン" data-文面="キャンセルポリシー">キャンセルポリシーを読む</button>
+          <button type="button" class="小さいボタン" data-文面="プライバシーポリシー">プライバシーポリシーを読む</button>
+        </p>
+        <label class="チェック 同意">
+          <input id="入力_同意" type="checkbox">
+          <span>上の内容と、キャンセルポリシー・プライバシーポリシーに同意します</span>
+        </label>
+        <p class="入力欄_エラー" id="エラー_同意" hidden></p>
+      </div>
+
+      <div id="送信のエラー" class="お知らせ お知らせ_注意" role="alert" hidden></div>
+      <button type="button" id="送信" class="ボタン ボタン_主 ボタン_幅いっぱい ボタン_大">この内容で予約する</button>
+      <p id="送信中" class="送信中" hidden aria-live="polite"><span class="くるくる くるくる_小" aria-hidden="true"></span>送信しています。画面を閉じずにお待ちください</p>
+    </section>
+
+    <!-- 6. 完了 -->
+    <section id="段6" class="段" hidden>
+      <div class="カード 完了">
+        <p class="完了_印" aria-hidden="true">❁</p>
+        <h2 id="完了_見出し" class="完了_見出し"></h2>
+        <p class="完了_番号の見出し">受付番号</p>
+        <p id="完了_受付番号" class="完了_番号"></p>
+        <p class="小さい">お問い合わせの際は、受付番号をお伝えください</p>
+        <p><a id="完了_照会へ" class="リンクボタン" href="shokai.html">ご予約の確認（予約照会）</a></p>
+        <p id="完了_文" class="完了_文"></p>
+      </div>
+      <div class="カード 完了_案内">
+        <h3>メールが届かないときは</h3>
+        <ul class="注記">
+          <li>迷惑メールフォルダに入っていないか、ご確認ください</li>
+          <li>携帯電話のメール（docomo・au・SoftBank など）をお使いの方は、<strong>「@gmail.com」からのメールを受け取れる</strong>ように設定してください</li>
+          <li>それでも届かないときは、Instagram の DM または公式LINE からお知らせください</li>
+        </ul>
+      </div>
+      <button type="button" id="もう一度予約" class="ボタン_文字">続けて別のご予約をする</button>
+    </section>
+
+    <!-- 問い合わせ先 -->
+    <section id="問い合わせ" class="問い合わせ" hidden>
+      <p>ご不明な点は、Instagram の DM または公式LINE からお問い合わせください。</p>
+      <p class="問い合わせのリンク">
+        <a id="Instagramへ" class="リンクボタン" href="#" target="_blank" rel="noopener" hidden>Instagram</a>
+        <a id="LINEへ" class="リンクボタン" href="#" target="_blank" rel="noopener" hidden>公式LINE</a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="フッター">
+    <p class="フッター_リンク">
+      <a class="文字のリンク" href="shokai.html">ご予約の確認</a>
+      <button type="button" class="文字のリンク" data-文面="キャンセルポリシー">キャンセルポリシー</button>
+      <button type="button" class="文字のリンク" data-文面="プライバシーポリシー">プライバシーポリシー</button>
+    </p>
+    <p>まちのこうじ屋さん Chika房</p>
+  </footer>
+
+  <!-- 画面下のカートボタン（商品の段で表示） -->
+  <div id="カートボタンの枠" class="カートボタンの枠" hidden>
+    <button type="button" id="カートボタン" class="カートボタン">
+      <span class="カートボタン_絵" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg>
+        <span id="カートボタン_点数" class="カートボタン_点数" hidden>0</span>
+      </span>
+      <span id="カートボタン_文" class="カートボタン_文">商品をお選びください</span>
+      <span id="カートボタン_金額" class="カートボタン_金額"></span>
+    </button>
+  </div>
+
+  <!-- 商品の詳しい画面（モーダル） -->
+  <div id="モーダル_商品" class="モーダル" hidden>
+    <div class="モーダル_幕" data-close></div>
+    <div class="モーダル_板" role="dialog" aria-modal="true" aria-labelledby="商品モーダル_名前">
+      <button type="button" class="モーダル_閉じる" data-close aria-label="閉じる">×</button>
+      <div class="モーダル_中身" id="商品モーダル_中身"></div>
+      <div class="モーダル_下">
+        <button type="button" class="ボタン ボタン_主 ボタン_幅いっぱい ボタン_金額つき" id="商品モーダル_決定"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- カート（モーダル） -->
+  <div id="モーダル_カート" class="モーダル" hidden>
+    <div class="モーダル_幕" data-close></div>
+    <div class="モーダル_板" role="dialog" aria-modal="true" aria-labelledby="カートモーダル_見出し">
+      <button type="button" class="モーダル_閉じる" data-close aria-label="閉じる">×</button>
+      <div class="モーダル_中身">
+        <h2 class="モーダル_見出し" id="カートモーダル_見出し">カート</h2>
+        <div id="カートモーダル_一覧"></div>
+      </div>
+      <div class="モーダル_下">
+        <p class="合計"><span id="カートモーダル_点数">0点</span><strong id="カートモーダル_金額">¥0</strong><span class="合計_税">（税込）</span></p>
+        <button type="button" class="ボタン ボタン_主 ボタン_幅いっぱい" id="カートモーダル_次へ">受取日を選ぶ</button>
+        <button type="button" class="ボタン_文字" data-close>商品選びにもどる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- キャンセルポリシー・プライバシーポリシー（モーダル。文面は下の template。要件 No.38） -->
+  <div id="モーダル_文面" class="モーダル" hidden>
+    <div class="モーダル_幕" data-close></div>
+    <div class="モーダル_板" role="dialog" aria-modal="true" aria-labelledby="文面モーダル_見出し">
+      <button type="button" class="モーダル_閉じる" data-close aria-label="閉じる">×</button>
+      <div class="モーダル_中身 文面" id="文面モーダル_中身"></div>
+      <div class="モーダル_下">
+        <button type="button" class="ボタン ボタン_主 ボタン_幅いっぱい" data-close>閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <template id="文面_キャンセルポリシー">
+    <h2 class="モーダル_見出し" id="文面モーダル_見出し">キャンセルポリシー</h2>
+    <p>ご予約のキャンセルや変更は、原則として受け取り日の2日前までにご連絡をお願いいたします。</p>
+    <p>お客様のご都合により、受け取り日の前日以降にキャンセルされた場合、商品代金の100%をキャンセル料として請求させていただく場合がございます。商品の特性上、ご理解ご協力のほど、何卒よろしくお願い申し上げます。</p>
+  </template>
+
+  <template id="文面_プライバシーポリシー">
+    <h2 class="モーダル_見出し" id="文面モーダル_見出し">プライバシーポリシー</h2>
+    <p>まちのこうじ屋さん Chika房（以下、「当店」といいます。）は、お客様からご提供いただく個人情報を、以下の通り適切に取り扱います。</p>
+    <h3>個人情報の利用目的</h3>
+    <p>お客様からいただいた個人情報は、ご予約内容の確認、商品の受け渡し、お問い合わせへの対応、および当店からの重要なお知らせの目的以外には一切使用いたしません。</p>
+    <h3>個人情報の管理</h3>
+    <p>当店は、お客様の個人情報を正確かつ最新の状態に保ち、個人情報への不正アクセス・紛失・破損・改ざん・漏洩などを防止するため、必要な措置を講じ、安全対策を実施し個人情報の厳重な管理を行います。</p>
+    <h3>第三者への開示・提供の禁止</h3>
+    <p>当店は、お客様よりお預かりした個人情報を適切に管理し、次のいずれかに該当する場合を除き、個人情報を第三者に開示いたしません。</p>
+    <ol>
+      <li>お客様の同意がある場合</li>
+      <li>法令に基づき開示することが必要である場合</li>
+    </ol>
+  </template>
+
+  <script src="js/inapp.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
